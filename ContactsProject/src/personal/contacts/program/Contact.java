@@ -6,8 +6,8 @@ public class Contact implements Comparable<Contact>
 {
 	private String firstName;
 	private String lastName;
-	private int homeNumber;
-	private int cellNumber;
+	private long homeNumber;
+	private long cellNumber;
 	private String homeAddress;
 	private String emailAddress;
 	private Calendar birthday;
@@ -28,7 +28,7 @@ public class Contact implements Comparable<Contact>
     }
     
     //Constructor - Overloaded
-    public Contact(String fName, String lName, int hNum, int cNum, String hAddr, String eAddr, Calendar bday, String n)
+    public Contact(String fName, String lName, long hNum, long cNum, String hAddr, String eAddr, Calendar bday, String n)
     {
     	this.firstName = fName;		
     	this.lastName = lName;
@@ -51,12 +51,12 @@ public class Contact implements Comparable<Contact>
     	return this.lastName;
     }
     
-    public int getHomeNumber()
+    public long getHomeNumber()
     {
     	return this.homeNumber;
     }
     
-    public int getCellNumber()
+    public long getCellNumber()
     {
     	return this.cellNumber;
     }
@@ -92,12 +92,12 @@ public class Contact implements Comparable<Contact>
     	this.lastName = lName;
     }
     
-    public void setHomeNumber(int hNum)
+    public void setHomeNumber(long hNum)
     {
     	this.homeNumber = hNum;
     }
     
-    public void setCellNumber(int cNum)
+    public void setCellNumber(long cNum)
     {
     	this.cellNumber = cNum;
     }

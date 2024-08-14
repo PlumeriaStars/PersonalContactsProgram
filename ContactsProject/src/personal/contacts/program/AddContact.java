@@ -46,11 +46,11 @@ public class AddContact
 			c.setLastName(lastName);
 			System.out.println();
 
-			int homeNumber;
+			long homeNumber;
 			do
 			{
 				System.out.print("What is the contact's home number? ");
-				homeNumber = kb.nextInt();
+				homeNumber = kb.nextLong();
 				kb.nextLine();
 				System.out.println("Is this information correct?(Y/N) :: " + homeNumber);
 				System.out.print("  ");
@@ -60,11 +60,11 @@ public class AddContact
 			c.setHomeNumber(homeNumber);
 			System.out.println();
 
-			int cellNumber;
+			long cellNumber;
 			do
 			{
 				System.out.print("What is the contact's cell number? ");
-				cellNumber = kb.nextInt();
+				cellNumber = kb.nextLong();
 				kb.nextLine();
 				System.out.println("Is this information correct?(Y/N) :: " + cellNumber);
 				System.out.print("  ");
