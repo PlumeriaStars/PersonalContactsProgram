@@ -122,11 +122,14 @@ public class Contact implements Comparable<Contact>
     	this.notes = n;
     }
 
-    //Uses the Comparable interface to compare to Contact objects
-    //Two Contact objects are equal if their content is equal, not necessarily their object addresses
+    //Uses the Comparable interface to compare two Contact objects
 	@Override
 	public int compareTo(Contact c) 
 	{
+		String thisFullName = this.firstName + " " + this.lastName;
+		String otherFullName = c.getFirstName() + " " +c.getLastName();
+		
+		//Two Contact objects are equal if their content is equal, not necessarily their object addresses
 		if( this.firstName.compareToIgnoreCase(c.getFirstName()) == 1  &&
 			this.lastName.compareToIgnoreCase(c.getLastName()) == 1	&&
 			this.homeNumber == c.getHomeNumber() &&
@@ -136,9 +139,15 @@ public class Contact implements Comparable<Contact>
 			this.birthday.equals(c.getBirthday()) &&
 			this.notes.compareToIgnoreCase(c.getNotes()) == 1
 		  )
-			return 1;
-		else
 			return 0;
+		//If the full name of this contact is alphabetically before the comparing contact
+		else if(thisFullName.compareToIgnoreCase(otherFullName) < 0)
+		{
+			return thisFullName.compareToIgnoreCase(otherFullName);
+		}
+		//Else, the full name of this contact is alphabetically after the comparing contact
+		else
+			return thisFullName.compareToIgnoreCase(otherFullName);
 	}
 
 	//General toString
