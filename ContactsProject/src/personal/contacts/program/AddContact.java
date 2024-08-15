@@ -1,13 +1,11 @@
 package personal.contacts.program;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Scanner;
 
 public class AddContact 
 {
-	private static ArrayList<Contact> contactsList = new ArrayList<Contact>();
 	
 	public static void GetUserInput(Contact c) throws IOException
     {
@@ -147,15 +145,5 @@ public class AddContact
 
 		kb.close();
     }
-	
-	public static void addToContactsList(Contact c)
-	{
-		contactsList.add(c);
-	}
-	
-	public static ArrayList<Contact> getContactsList()
-	{
-		return contactsList;
-	}
 	
 }
