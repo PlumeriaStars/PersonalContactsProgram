@@ -2,11 +2,15 @@ package personal.contacts.program;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+
+import javax.swing.UnsupportedLookAndFeelException;
 
 public class ContactsProgram 
 {
 
-	public static void main(String[] args) throws IOException
+	public static void main(String[] args) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
 	{
 		Calendar calendar = new Calendar.Builder().setDate(1982, 8-1, 24).build();
 		
@@ -14,17 +18,34 @@ public class ContactsProgram
 								 "123 Street", "jsmith@email.com", 
 								 calendar, "notes" 
 								);
-		Contact c2 = new Contact();
-		AddContact.GetUserInput(c2);
-								
-		AddContact.addToContactsList(c1);
-		AddContact.addToContactsList(c2);
+		//Contact c2 = new Contact();
+		//AddContact.GetUserInput(c2);
+		Contact c3 = new Contact("Anne", "Taylor", 1234567890, 1472589630, 
+				 				 "123 Street", "annesm@email.com", 
+				 				 calendar, "notes" 
+								);
 		
-		for(Contact c: AddContact.getContactsList())
-		{
-			System.out.println(c);
-			System.out.println();
-		}
+		Contact c4 = new Contact("Janet", "Goose", 1234567890, 1472589630, 
+				 				 "123 Street", "jsmith@email.com", 
+				 				 calendar, "notes" 
+								);
+								
+		ListOfContacts.addToContactsList(c1);
+		ListOfContacts.addToContactsList(c3);
+		ListOfContacts.addToContactsList(c4);
+		
+		//Collections.sort(ListOfContacts.getContactsList(), Collections.reverseOrder(new ContactComparators.lastFirstNameComparator()));
+		Collections.sort(ListOfContacts.getContactsList());		
+		//ListOfContacts.viewFirstLastNames();
+		//System.out.println();
+		
+		//Collections.sort(ListOfContacts.getContactsList(), new ContactComparators.lastFirstNameComparator());
+		//ListOfContacts.viewLastFirstNames();
+		
+		//ListOfContacts.viewAllContactInformation();
+		
+		//OLDContactGUI programGUI = new OLDContactGUI();
+		ContactGUI programGUI = new ContactGUI();
 
 	}
 
