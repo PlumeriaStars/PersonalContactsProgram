@@ -1,46 +1,48 @@
 package personal.contacts.program;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
-/* Contains the ArrayList of Contact objects the program will be working with
- * Various methods related to changing or displaying from the ArrayList are here
+import javax.swing.DefaultListModel;
+
+/* Contains the DefaultListModel of Contact objects the program will be working with
+ * Can add to, remove from index, and return the DefaultListModel
+ * Sorting method for the DefaultListModel created
  */
 public class ListOfContacts
 {
-	private static ArrayList<Contact> contactsList = new ArrayList<Contact>();
+	private static DefaultListModel<Contact> contactsList = new DefaultListModel<Contact>();
 	
+	//Add Contact c to the end of the DefaultListModel
 	public static void addToContactsList(Contact c)
 	{
-		contactsList.add(c);
+		contactsList.addElement(c);
 	}
 	
-	public static ArrayList<Contact> getContactsList()
+	//Return the full DefaultListModel
+	public static DefaultListModel<Contact> getContactsList()
 	{
 		return contactsList;
 	}
 	
-	public static void viewFirstLastNames()
+	//Remove from the DefaultListModel at the index specified
+	public static void removeFromContactList(int index)
 	{
-		for(Contact c: contactsList)
-		{
-			System.out.println(c.getFirstName() + " " + c.getLastName());
-		}
+		contactsList.remove(index);
 	}
 	
-	public static void viewLastFirstNames()
+	//In order to sort the DefaultListModel, first copy the contents of the model into an ArrayList
+	//Then, call the ArrayList's sorting method () using a comparator defined in ContactComparators
+	//Clear the DefaultListModel, add the elements of the sorted ArrayList back into the DefaultListModel
+	public static void sortContactsList(Comparator<Contact> comparator)
 	{
-		for(Contact c: contactsList)
-		{
-			System.out.println(c.getLastName() + " " + c.getFirstName());
-		}
-	}
-	
-	public static void viewAllContactInformation()
-	{
-		for(Contact c: contactsList)
-		{
-			System.out.println(c);
-		}
+		ArrayList<Contact> cList = Collections.list(contactsList.elements());
+		Collections.sort(cList, comparator);;
+		contactsList.clear();
+		
+		for(Contact c: cList)
+			contactsList.addElement(c);
 	}
 
 }

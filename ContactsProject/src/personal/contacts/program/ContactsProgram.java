@@ -2,9 +2,6 @@ package personal.contacts.program;
 
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-
 import javax.swing.UnsupportedLookAndFeelException;
 
 public class ContactsProgram 
@@ -18,8 +15,7 @@ public class ContactsProgram
 								 "123 Street", "jsmith@email.com", 
 								 calendar, "notes" 
 								);
-		//Contact c2 = new Contact();
-		//AddContact.GetUserInput(c2);
+		
 		Contact c3 = new Contact("Anne", "Taylor", 1234567890, 1472589630, 
 				 				 "123 Street", "annesm@email.com", 
 				 				 calendar, "notes" 
@@ -35,16 +31,10 @@ public class ContactsProgram
 		ListOfContacts.addToContactsList(c4);
 		
 		//Collections.sort(ListOfContacts.getContactsList(), Collections.reverseOrder(new ContactComparators.lastFirstNameComparator()));
-		Collections.sort(ListOfContacts.getContactsList());		
-		//ListOfContacts.viewFirstLastNames();
-		//System.out.println();
+		ListOfContacts.sortContactsList(new ContactComparators.firstLastNameComparator());	
 		
 		//Collections.sort(ListOfContacts.getContactsList(), new ContactComparators.lastFirstNameComparator());
-		//ListOfContacts.viewLastFirstNames();
-		
-		//ListOfContacts.viewAllContactInformation();
-		
-		//OLDContactGUI programGUI = new OLDContactGUI();
+
 		ContactGUI programGUI = new ContactGUI();
 
 	}

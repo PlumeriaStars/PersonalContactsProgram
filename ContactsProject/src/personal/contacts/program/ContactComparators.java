@@ -1,5 +1,6 @@
 package personal.contacts.program;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 
 /* Contains various Comparators to sort Contact objects based on different fields
@@ -8,8 +9,54 @@ import java.util.Comparator;
  */
 public class ContactComparators 
 {
+	private static ArrayList<Comparator<Contact>> comparatorList = new ArrayList<Comparator<Contact>>();
+	private static int currentComparatorIndex = 0;
+	
 	//Default constructor
-	public ContactComparators() { }
+	public ContactComparators() 
+	{ 
+		addComparatorsToList();
+		setCurrentComparator(currentComparatorIndex);
+	}
+	
+	//Adds the comparators found in ContactComparators to a list
+	private static void addComparatorsToList() 
+	{	
+		comparatorList.add(new ContactComparators.firstLastNameComparator());
+		comparatorList.add(new ContactComparators.lastFirstNameComparator());
+	}
+		
+	//Sets the index corresponding to which comparator in the comparatorList will be used
+	private static void setCurrentComparator(int index)
+	{
+		switch(index)
+		{
+			case 0:
+				currentComparatorIndex = index;
+				break;
+			case 1:
+				currentComparatorIndex = index;
+				break;
+			default:
+				currentComparatorIndex = 0;
+					
+		}
+	}
+		
+	//Returns the current comparator being used based on the value of currentComparatorIndex
+	public Comparator<Contact> getCurrentComparator()
+	{
+		switch(currentComparatorIndex)
+		{
+			case 0:
+				return comparatorList.get(0);
+			case 1:
+				return comparatorList.get(1);
+			default:
+				return comparatorList.get(0);
+				
+		}
+	}
 	
 	public static class firstLastNameComparator implements Comparator<Contact>
 	{

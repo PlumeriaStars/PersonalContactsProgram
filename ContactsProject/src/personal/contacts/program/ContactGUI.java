@@ -1,43 +1,28 @@
 package personal.contacts.program;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.MenuBar;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-import javax.swing.BorderFactory;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.TitledBorder;
+import javax.swing.*;
+import javax.swing.border.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+/* Contains code regarding the main GUI window
+ * The main window is split into 3 panels
+ * 		1. jListPanel -> displays the JList of existing contacts
+ * 		2. infoPanel	 -> displays the various fields of the currently selected contact
+ * 		3. optionsPanel	 -> contains buttons that perform various actions
+ * A menu bar is also included
+ */
 public class ContactGUI extends JFrame
 {
-	JPanel bg, infoPanel, contactsPanel, optionsPanel;
+	private JPanel bg, infoPanel, jListPanel, optionsPanel;
+	private JList<Contact> contactsJList;
+	private JScrollPane scrollPane;
 	
+	//Constructor - contains calls to functions that create the various panels
 	public ContactGUI() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
 	{
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -45,6 +30,8 @@ public class ContactGUI extends JFrame
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		this.setLocationRelativeTo(null);		
 		this.setMinimumSize(new Dimension(550, 450));
+		this.setResizable(false);
+		this.setTitle("Contacts Program");
 		
 		addBackgroundPanel();
 		addForegroundPanel();
@@ -52,8 +39,10 @@ public class ContactGUI extends JFrame
 		
 		this.pack();
 		this.setVisible(true);
+		
 	}
-	
+
+	//Creates the background panel which covers the entire frame
 	private void addBackgroundPanel()
 	{
 		bg = new JPanel();
@@ -63,49 +52,55 @@ public class ContactGUI extends JFrame
 		this.add(bg);
 	}
 	
+	//Instantiates the three foreground panels
+	//Calls helper methods that fill these foreground panels
 	private void addForegroundPanel()
 	{
 		JPanel fg = new JPanel();
-		fg.setMinimumSize(getMinimumSize());
 		fg.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         fg.setLayout(new GridBagLayout());
         
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.weightx = 1;
+        gbc.weightx = 0.1;
         gbc.weighty = 1;
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.fill = GridBagConstraints.BOTH;
-        
 		fg.setBackground(Color.lightGray);
 		bg.add(fg);
 		
-		contactsPanel = new JPanel(new BorderLayout());
+		jListPanel = new JPanel(new BorderLayout());
+		jListPanel.setBorder(new CompoundBorder(new TitledBorder("Contacts"), new EmptyBorder(4, 4, 4, 4)));
 		displayContactsJList();
-		fg.add(contactsPanel, gbc);
+		fg.add(jListPanel, gbc);
 		
 		
 		gbc.gridx++;
-		infoPanel = new JPanel(new GridBagLayout());
+		gbc.weightx = 1;
+		infoPanel = new JPanel(new BorderLayout());
 		infoPanel.setBorder(new CompoundBorder(new TitledBorder("Detailed Information"), new EmptyBorder(4, 4, 4, 4)));
 		fg.add(infoPanel, gbc);
 		
 		gbc.gridx = 0;
 		gbc.gridy++;
 		gbc.gridwidth = 2;
+		gbc.weightx = 0;
+        gbc.weighty = 0.05;
 		optionsPanel = new JPanel(new GridBagLayout());
 		optionsPanel.setBorder(new CompoundBorder(new TitledBorder("Options"), new EmptyBorder(4, 4, 4, 4)));
+		
 		infoPanel.setBackground(Color.lightGray);
 		bottomOptionsBar();
 		fg.add(optionsPanel, gbc);
 	}
 	
+	//Creates and displays the JList found in the contactsPanel
 	private void displayContactsJList()
 	{
-		contactsPanel.setBackground(Color.lightGray);
-		contactsPanel.setBorder(new CompoundBorder(new TitledBorder("Contacts"), new EmptyBorder(4, 4, 4, 4)));
-		JList<Contact> contactsJList = new JList<Contact>(convertToDefaultModel());
+		jListPanel.setBackground(Color.lightGray);
+		
+		contactsJList = new JList<Contact>(ListOfContacts.getContactsList());
 		contactsJList.setCellRenderer(new ContactRenderers.FirstNameRenderer());
 		contactsJList.setVisibleRowCount(10);
 		contactsJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -117,97 +112,31 @@ public class ContactGUI extends JFrame
 													{
 														if (e.getValueIsAdjusting() == false) 
 														{
+															//Clear the infoPanel of the previously selected contact's information
 															clearContactInfoPanel();
-															displayContactInfo(contactsJList.getSelectedValue());
+															//Display the contact information of the currently selected contact
+															if(contactsJList.getSelectedValue() != null)
+																displayContactInfo(contactsJList.getSelectedValue());
 													    }
 														
 													}
 												}
 										      );
-        JScrollPane scrollPane = new JScrollPane(contactsJList);
-        contactsPanel.add(scrollPane);
+        scrollPane = new JScrollPane(contactsJList);
+        jListPanel.add(scrollPane);
 	}
 
+	//Uses the ContactsPanel template to display the information of Contact c
 	private void displayContactInfo(Contact c)
 	{
-		GridBagConstraints infoGBC = new GridBagConstraints();
-		infoGBC.gridx = 0;
-		infoGBC.gridy = 0;
-		infoGBC.weightx = 0;
-		infoGBC.weighty = 1;
-		infoGBC.anchor = GridBagConstraints.NORTHWEST;
-		infoGBC.fill = GridBagConstraints.HORIZONTAL;
-		
-		infoPanel.add(new JLabel("First Name: "), infoGBC);
-		infoGBC.gridx += 2;
-		infoPanel.add(new JLabel("Last Name: "), infoGBC);
-		
-		infoGBC.gridx = 0;
-		infoGBC.gridy = 1;
-		infoPanel.add(new JLabel("Home Number: "), infoGBC);
-		infoGBC.gridx += 2;;
-		infoPanel.add(new JLabel("Cell Number: "), infoGBC);
-		
-		infoGBC.gridx = 0;
-		infoGBC.gridy++;
-		infoPanel.add(new JLabel("Home Address: "), infoGBC);
-		infoGBC.gridy++;
-		infoPanel.add(new JLabel("Email Address: "), infoGBC);
-		infoGBC.gridy++;
-		infoPanel.add(new JLabel("Birthday: "), infoGBC);
-		infoGBC.gridy++;
-		infoPanel.add(new JLabel("Notes: "), infoGBC);
-		
-		infoGBC.insets = new Insets(0, 0, 0, 4);
-		infoGBC.gridx = 1;
-		infoGBC.gridy = 0;
-		infoGBC.weightx = 1;
-		JTextField firstName = new JTextField(c.getFirstName(), 8);
-		firstName.setEditable(false);
-		infoPanel.add(firstName, infoGBC);
-		
-		infoGBC.gridx += 2;
-		JTextField lastName = new JTextField(c.getLastName(), 8);
-		lastName.setEditable(false);
-		infoPanel.add(lastName, infoGBC);
-			
-		infoGBC.gridx = 1;
-		infoGBC.gridy++;
-		JTextField homeNum = new JTextField("" + c.getHomeNumber());
-		homeNum.setEditable(false);
-		infoPanel.add(homeNum, infoGBC);
-		
-		infoGBC.gridx += 2;
-		JTextField cellNum = new JTextField("" + c.getCellNumber());
-		cellNum.setEditable(false);
-		infoPanel.add(cellNum, infoGBC);
-		
-		infoGBC.gridx = 1;
-		infoGBC.gridwidth = 4;
-		infoGBC.gridy++;
-		JTextField homAddr = new JTextField("" + c.getHomeAddress(), 15);
-		homAddr.setEditable(false);
-		infoPanel.add(homAddr, infoGBC);
-		
-		infoGBC.gridy++;
-		JTextField emailAddr = new JTextField("" + c.getEmailAddress(), 15);
-		emailAddr.setEditable(false);
-		infoPanel.add(emailAddr, infoGBC);
-		
-		infoGBC.gridy++;
-		JTextField birthday = new JTextField("" + c.getBirthday().toString(), 15);
-		birthday.setEditable(false);
-		infoPanel.add(birthday, infoGBC);
-		
-		infoGBC.gridy++;
-		infoGBC.gridheight = 3;
-		JTextField notes = new JTextField("" + c.getNotes(), 15);
-		notes.setEditable(false);
-		infoPanel.add(notes, infoGBC);
-		
-        
+		ContactsPanel contactInfo = new ContactsPanel(c);
+		infoPanel.add(contactInfo);       
 	}
 	
+	//Creates the menu bar
+	//Adds keyboard shortcuts to the main actions, adding and editing
+	//		CTRL + N -> Add new Contact
+	// 		CTRL + E -> Edit (selected) contact
 	private void topMenuBar()
 	{
 		JMenuBar menuBar = new JMenuBar();
@@ -216,8 +145,9 @@ public class ContactGUI extends JFrame
 		menuBar.add(mainMenu);
 		
 		JMenuItem addContact = new JMenuItem("Add", KeyEvent.VK_1);
-		addContact.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
+		addContact.setAccelerator(KeyStroke.getKeyStroke('N', KeyEvent.CTRL_DOWN_MASK));
 		addContact.setToolTipText("Add a new contact");
+		addContact.addActionListener(new GUIActionListeners.addContactAction("Add a new contact"));
 		mainMenu.add(addContact);
 		
 		JMenuItem editContact = new JMenuItem("Edit", KeyEvent.VK_2);
@@ -232,6 +162,8 @@ public class ContactGUI extends JFrame
 		this.setJMenuBar(menuBar);
 	}
 	
+	//Lays out the buttons at the bottom of the main panel
+	//Button options include Adding a contact, Editing the selected contact, and choosing a Sorting method
 	private void bottomOptionsBar()
 	{
 		optionsPanel.setBackground(Color.lightGray);
@@ -243,6 +175,7 @@ public class ContactGUI extends JFrame
 		optionsGBC.anchor = GridBagConstraints.WEST;
 		
 		JButton addC = new JButton("Add Contact");
+		addC.addActionListener(new GUIActionListeners.addContactAction("Add a new Contact"));
 		optionsPanel.add(addC, optionsGBC);
 		
 		optionsGBC.gridx++;	
@@ -265,17 +198,7 @@ public class ContactGUI extends JFrame
 		
 	}
 	
-	private DefaultListModel<Contact> convertToDefaultModel()
-	{
-		DefaultListModel<Contact> cList = new DefaultListModel<Contact>();
-		for(Contact c : ListOfContacts.getContactsList())
-		{
-			cList.addElement(c);
-		}
-		
-		return cList;
-	}
-	
+	//Clears the infoPanel of the last selected contact's information
 	private void clearContactInfoPanel() 
 	{
 		
