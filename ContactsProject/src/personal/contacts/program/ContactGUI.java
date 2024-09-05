@@ -2,6 +2,7 @@ package personal.contacts.program;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 import javax.swing.*;
@@ -19,8 +20,10 @@ import javax.swing.event.ListSelectionListener;
 public class ContactGUI extends JFrame
 {
 	private JPanel bg, infoPanel, jListPanel, optionsPanel;
-	private JList<Contact> contactsJList;
+	private static JList<Contact> contactsJList;
 	private JScrollPane scrollPane;
+	static JButton editContact, editConfirm, editCancel;
+	static ContactsPanel contactInfo;
 	
 	//Constructor - contains calls to functions that create the various panels
 	public ContactGUI() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
@@ -129,7 +132,7 @@ public class ContactGUI extends JFrame
 	//Uses the ContactsPanel template to display the information of Contact c
 	private void displayContactInfo(Contact c)
 	{
-		ContactsPanel contactInfo = new ContactsPanel(c);
+		contactInfo = new ContactsPanel(c);
 		infoPanel.add(contactInfo);       
 	}
 	
@@ -153,6 +156,7 @@ public class ContactGUI extends JFrame
 		JMenuItem editContact = new JMenuItem("Edit", KeyEvent.VK_2);
 		editContact.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK));
 		editContact.setToolTipText("Edit an existing contact");
+		editContact.addActionListener(new GUIActionListeners.editContactAction("Edit and existing Contact", contactsJList.getSelectedValue(), contactsJList.getSelectedIndex()));
 		mainMenu.add(editContact);
 		
 		JMenuItem appearance = new JMenuItem("Change Appearance", KeyEvent.VK_3);
@@ -174,26 +178,38 @@ public class ContactGUI extends JFrame
 		optionsGBC.weighty = 1;
 		optionsGBC.anchor = GridBagConstraints.WEST;
 		
-		JButton addC = new JButton("Add Contact");
-		addC.addActionListener(new GUIActionListeners.addContactAction("Add a new Contact"));
-		optionsPanel.add(addC, optionsGBC);
+		JButton addContact = new JButton("Add Contact");
+		addContact.addActionListener(new GUIActionListeners.addContactAction("Add a new Contact"));
+		optionsPanel.add(addContact, optionsGBC);
 		
 		optionsGBC.gridx++;	
-		JButton editC = new JButton("Edit Contact");
-		optionsPanel.add(editC, optionsGBC);
+		editContact = new JButton("Edit Contact");
+		editContact.addActionListener(new GUIActionListeners.editContactAction("Edit and existing Contact", contactsJList.getSelectedValue(), contactsJList.getSelectedIndex()));
+		optionsPanel.add(editContact, optionsGBC);
+		
+		editConfirm = new JButton("Save Edits");
+		editConfirm.addActionListener(new GUIActionListeners.editContactAction("Edit and existing Contact", contactsJList.getSelectedValue(), contactsJList.getSelectedIndex()));
+		optionsPanel.add(editConfirm, optionsGBC);
+		editConfirm.setVisible(false);
+		
+		optionsGBC.gridx++;	
+		editCancel = new JButton("Cancel Edits");
+		editCancel.addActionListener(new GUIActionListeners.editContactAction("Edit and existing Contact", contactsJList.getSelectedValue(), contactsJList.getSelectedIndex()));
+		optionsPanel.add(editCancel, optionsGBC);
+		editCancel.setVisible(false);
 
 		optionsGBC.gridx = 0;
 		optionsGBC.gridy = 1;		
-		JLabel sortT = new JLabel("Sorting Options");
-		optionsPanel.add(sortT, optionsGBC);
+		JLabel sortLabel = new JLabel("Sorting Options");
+		optionsPanel.add(sortLabel, optionsGBC);
 		
 		optionsGBC.gridx++;
-		JLabel sortO = new JLabel("Sorting Combo Box");
-		optionsPanel.add(sortO, optionsGBC);
+		JLabel sortComboBox = new JLabel("Sorting Combo Box");
+		optionsPanel.add(sortComboBox, optionsGBC);
 		
 		optionsGBC.gridx++;
-		JButton sortC = new JButton("Sort");
-		optionsPanel.add(sortC, optionsGBC);
+		JButton sortConfirm = new JButton("Sort");
+		optionsPanel.add(sortConfirm, optionsGBC);
 		
 		
 	}
@@ -207,5 +223,22 @@ public class ContactGUI extends JFrame
 		infoPanel.repaint();
 		
 	}
+	
+	//Gets the index of the contact currently selected in the JList
+	public static Contact getCurrentlySelectedContact()
+	{
+		return contactsJList.getSelectedValue();
+	}
+	
+	//Gets the Contact object currently selected in the JList
+	public static int getCurrentlySelectedContactIndex()
+	{
+		return contactsJList.getSelectedIndex();
+	}
 
+	//Gets the contacts JList
+	public static JList<Contact> getContactsJList()
+	{
+		return contactsJList;
+	}
 }

@@ -2,6 +2,7 @@ package personal.contacts.program;
 
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
+import javax.swing.JMenuItem;
 
 /* Actions listeners, derived from AbstractAction, that are used by the GUI
  * GUI will have buttons and a menu bar, providing two different ways to access an action (ex. "Add") 
@@ -25,5 +26,36 @@ public class GUIActionListeners
 			AddContact addNew = new AddContact();
 		}
 		
+	}
+	
+	//The add action calls the EditContact class when a component linked to this action is called
+	//Buttons linked to editing in ContactGUI have no access modifier declared
+	// so that they can be accessed here, outside of the class
+	public static class editContactAction extends AbstractAction
+	{
+		
+		public editContactAction(String desc, Contact c, int cIndex)
+		{
+			putValue(SHORT_DESCRIPTION, desc);
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) 
+		{		
+			if(ContactGUI.getCurrentlySelectedContact() != null)
+			{
+				EditContact.setCurrentlyEditing();
+				
+				if(e.getSource().equals(ContactGUI.editContact) || e.getSource() instanceof JMenuItem)
+					EditContact.makeContactInfoEditable();
+				
+				if(e.getSource().equals(ContactGUI.editConfirm))
+					EditContact.saveEditedContact();
+				
+				if(e.getSource().equals(ContactGUI.editCancel))
+					EditContact.revertContactInfoPanel();
+			}
+		}
+			
 	}
 }

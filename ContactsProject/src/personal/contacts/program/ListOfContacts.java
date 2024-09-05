@@ -20,6 +20,12 @@ public class ListOfContacts
 		contactsList.addElement(c);
 	}
 	
+	//Set a certain index to be Contact c
+	public static void setAtContactsList(Contact c, int cIndex)
+	{
+		contactsList.setElementAt(c, cIndex);;
+	}
+	
 	//Return the full DefaultListModel
 	public static DefaultListModel<Contact> getContactsList()
 	{

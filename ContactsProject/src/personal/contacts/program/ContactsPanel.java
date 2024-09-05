@@ -27,6 +27,7 @@ public class ContactsPanel extends JPanel
 	private JComboBox<Integer> birthDay, birthYear;
 	private String[] months = {"January", "Feburary", "March", "April", "May", "June", "July", 
 								"August", "September", "October", "November", "December"};
+	private int startingYear;
 	
 	//Constructor - used when creating an empty contact panel to be edited
 	public ContactsPanel(String title) 
@@ -42,25 +43,8 @@ public class ContactsPanel extends JPanel
 	public ContactsPanel(Contact c)
 	{
 		createEmptyPanel();
-		firstName.setText(c.getFirstName());
-		firstName.setEditable(false);
-		lastName.setText(c.getLastName());
-		lastName.setEditable(false);
-		homeNum.setText("" + c.getHomeNumber());
-		homeNum.setEditable(false);
-		cellNum.setText("" + c.getCellNumber());
-		cellNum.setEditable(false);
-		homeAddr.setText(c.getHomeAddress());
-		homeAddr.setEditable(false);
-		emailAddr.setText(c.getEmailAddress());
-		emailAddr.setEditable(false);
-		
-		monthField.setText("" + months[c.getBirthday().get(Calendar.MONTH)]);
-		dayField.setText("" + c.getBirthday().get(Calendar.DAY_OF_MONTH));
-		yearField.setText("" + c.getBirthday().get(Calendar.YEAR));
-
-		notes.setText(c.getNotes());
-		notes.setEditable(false);
+		setFieldData(c);
+		setTextFieldEditability(false);
 		
 		setBirthdayComboBoxVisibilty(false);
 		setBirthdayFieldVisibilty(true);
@@ -144,7 +128,7 @@ public class ContactsPanel extends JPanel
 	}
 	
 	//Lays out all the components of the ContactsPanel
-	//   birthDay combo box is dependent on birthMonth combo box, the selectable days change based on the selected month
+	//birthDay combo box is dependent on birthMonth combo box, the selectable days change based on the selected month
  	private void createEmptyPanel() 
 	{
 		this.setLayout(new GridBagLayout());
@@ -265,7 +249,10 @@ public class ContactsPanel extends JPanel
 		gbc.gridheight = 3;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		notes = new JTextArea();
+		notes.setLineWrap(true);
 		this.add(notes, gbc);
+		
+		this.setOpaque(true);
 	}
  	
  	//Fills in the birthDay combo box with the specified number of days
@@ -278,15 +265,32 @@ public class ContactsPanel extends JPanel
  	//Fills in the birthYear combo box with the years between the starting year and the current PC system year
  	private void fillYears()
  	{
- 		int startingYear = 1920;
+ 		startingYear = 1920;
  		int size = Year.now().getValue() - startingYear + 1;
  		
  		for(int i = 0; i < size; i++)
  			birthYear.addItem((Integer) startingYear + i);
  	}
  	
+ 	//Sets all the field text based on the data from the Contact object passed
+ 	public void setFieldData(Contact c)
+ 	{
+ 		firstName.setText(c.getFirstName());
+		lastName.setText(c.getLastName());
+		homeNum.setText("" + c.getHomeNumber());
+		cellNum.setText("" + c.getCellNumber());
+		homeAddr.setText(c.getHomeAddress());
+		emailAddr.setText(c.getEmailAddress());
+		
+		monthField.setText("" + months[c.getBirthday().get(Calendar.MONTH)]);
+		dayField.setText("" + c.getBirthday().get(Calendar.DAY_OF_MONTH));
+		yearField.setText("" + c.getBirthday().get(Calendar.YEAR));
+
+		notes.setText(c.getNotes());
+ 	}
+ 	
  	//Sets the visibility of the birthday text fields depending on the boolean parameter
- 	private void setBirthdayFieldVisibilty(Boolean bool)
+ 	public void setBirthdayFieldVisibilty(Boolean bool)
  	{
  		if(bool)
  		{
@@ -303,7 +307,7 @@ public class ContactsPanel extends JPanel
  	}
  	
  	//Sets the visibility of the birthday combo boxes depending on the boolean parameter
- 	private void setBirthdayComboBoxVisibilty(Boolean bool)
+ 	public void setBirthdayComboBoxVisibilty(Boolean bool)
  	{
  		if(bool)
  		{
@@ -317,6 +321,28 @@ public class ContactsPanel extends JPanel
  			birthDay.setVisible(false);
  			birthYear.setVisible(false);
  		}
+ 	}
+ 	
+ 	//Sets the editability of the all the text fields depending on the boolean parameter
+ 	public void setTextFieldEditability(Boolean bool)
+ 	{
+ 		JTextField[] allTextFields = {firstName, lastName, homeNum, cellNum, homeAddr, emailAddr};
+ 		for(JTextField tx : allTextFields)
+ 		{
+ 			if(tx != null)
+ 				tx.setEditable(bool);
+ 		}
+ 		
+ 		notes.setEditable(bool);
+ 	}
+ 	
+ 	//Sets the default values of the birthday combo box to pre-existing values
+ 	//This is used when editing an existing contact
+ 	public void setBirthdayComboBox()
+ 	{
+ 		birthMonth.setSelectedItem(monthField.getText());
+ 		birthDay.setSelectedIndex(Integer.valueOf(dayField.getText()) - 1);
+ 		birthYear.setSelectedIndex(Integer.valueOf(yearField.getText()) - startingYear);
  	}
 
 }
