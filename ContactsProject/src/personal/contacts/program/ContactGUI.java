@@ -4,11 +4,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.Arrays;
 
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.tools.DiagnosticCollector;
 
 /* Contains code regarding the main GUI window
  * The main window is split into 3 panels
@@ -22,7 +24,7 @@ public class ContactGUI extends JFrame
 	private JPanel bg, infoPanel, jListPanel, optionsPanel;
 	private static JList<Contact> contactsJList;
 	private JScrollPane scrollPane;
-	static JButton editContact, editConfirm, editCancel;
+	static JButton addContact, deleteContact, editContact, editConfirm, editCancel, sortConfirm;
 	static ContactsPanel contactInfo;
 	
 	//Constructor - contains calls to functions that create the various panels
@@ -90,8 +92,6 @@ public class ContactGUI extends JFrame
 		gbc.gridwidth = 2;
 		gbc.weightx = 0;
         gbc.weighty = 0.05;
-		optionsPanel = new JPanel(new GridBagLayout());
-		optionsPanel.setBorder(new CompoundBorder(new TitledBorder("Options"), new EmptyBorder(4, 4, 4, 4)));
 		
 		infoPanel.setBackground(Color.lightGray);
 		bottomOptionsBar();
@@ -167,52 +167,62 @@ public class ContactGUI extends JFrame
 	}
 	
 	//Lays out the buttons at the bottom of the main panel
-	//Button options include Adding a contact, Editing the selected contact, and choosing a Sorting method
+	//Button options include Adding a contact, Deleting a contact, Editing the selected contact, and choosing a Sorting method
+	//The options panel uses a GridLayout to avoid problems with how non-visible elements interact with the GridBagLayout
 	private void bottomOptionsBar()
 	{
+		GridLayout grid = new GridLayout(2, 0, 8, 4);
+		optionsPanel = new JPanel(grid);
+		optionsPanel.setBorder(new CompoundBorder(new TitledBorder("Options"), new EmptyBorder(4, 4, 4, 4)));
 		optionsPanel.setBackground(Color.lightGray);
-		GridBagConstraints optionsGBC = new GridBagConstraints();
-		optionsGBC.gridx = 0;
-		optionsGBC.gridy = 0;
-		optionsGBC.weightx = 1;
-		optionsGBC.weighty = 1;
-		optionsGBC.anchor = GridBagConstraints.WEST;
+
 		
-		JButton addContact = new JButton("Add Contact");
+		addContact = new JButton("Add New");
 		addContact.addActionListener(new GUIActionListeners.addContactAction("Add a new Contact"));
-		optionsPanel.add(addContact, optionsGBC);
+		optionsPanel.add(addContact);
 		
-		optionsGBC.gridx++;	
+		deleteContact = new JButton("Delete");
+		optionsPanel.add(deleteContact);
+		
+		//In order to have two different buttons occupy the same grid square
+		//Create a CardLayout panel that will switch between both buttons
+		CardLayout editingCard = new CardLayout();
+		JPanel editingPanel = new JPanel(editingCard);
+		optionsPanel.add(editingPanel);
+		
 		editContact = new JButton("Edit Contact");
 		editContact.addActionListener(new GUIActionListeners.editContactAction("Edit and existing Contact", contactsJList.getSelectedValue(), contactsJList.getSelectedIndex()));
-		optionsPanel.add(editContact, optionsGBC);
+		editContact.addActionListener(new ActionListener() 
+										{
+											@Override
+											public void actionPerformed(ActionEvent e) 
+											{
+												editingCard.next(editingPanel);
+											}
+										});
+		editingPanel.add(editContact);
 		
 		editConfirm = new JButton("Save Edits");
 		editConfirm.addActionListener(new GUIActionListeners.editContactAction("Edit and existing Contact", contactsJList.getSelectedValue(), contactsJList.getSelectedIndex()));
-		optionsPanel.add(editConfirm, optionsGBC);
+		editingPanel.add(editConfirm);
 		editConfirm.setVisible(false);
 		
-		optionsGBC.gridx++;	
 		editCancel = new JButton("Cancel Edits");
 		editCancel.addActionListener(new GUIActionListeners.editContactAction("Edit and existing Contact", contactsJList.getSelectedValue(), contactsJList.getSelectedIndex()));
-		optionsPanel.add(editCancel, optionsGBC);
+		optionsPanel.add(editCancel);
 		editCancel.setVisible(false);
-
-		optionsGBC.gridx = 0;
-		optionsGBC.gridy = 1;		
+		
+		grid.setColumns(3);
 		JLabel sortLabel = new JLabel("Sorting Options");
-		optionsPanel.add(sortLabel, optionsGBC);
-		
-		optionsGBC.gridx++;
+		optionsPanel.add(sortLabel);
+
 		JLabel sortComboBox = new JLabel("Sorting Combo Box");
-		optionsPanel.add(sortComboBox, optionsGBC);
-		
-		optionsGBC.gridx++;
-		JButton sortConfirm = new JButton("Sort");
-		optionsPanel.add(sortConfirm, optionsGBC);
-		
-		
+		optionsPanel.add(sortComboBox);
+
+		sortConfirm = new JButton("Sort");
+		optionsPanel.add(sortConfirm);
 	}
+	
 	
 	//Clears the infoPanel of the last selected contact's information
 	private void clearContactInfoPanel() 

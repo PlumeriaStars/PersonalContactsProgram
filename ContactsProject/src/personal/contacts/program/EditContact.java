@@ -16,6 +16,9 @@ public class EditContact
 	public static void setCurrentlyEditing()
 	{
 		ContactGUI.getContactsJList().setEnabled(false);
+		ContactGUI.addContact.setEnabled(false);
+		ContactGUI.deleteContact.setEnabled(false);
+		ContactGUI.sortConfirm.setEnabled(false);
 		currentContact = ContactGUI.getCurrentlySelectedContact();
 		currentContactIndex = ContactGUI.getCurrentlySelectedContactIndex();
 	}
@@ -69,7 +72,11 @@ public class EditContact
 		ContactGUI.editContact.setVisible(true);
 		ContactGUI.editConfirm.setVisible(false);
 		ContactGUI.editCancel.setVisible(false);
+		ContactGUI.addContact.setEnabled(true);
+		ContactGUI.deleteContact.setEnabled(true);
+		ContactGUI.sortConfirm.setEnabled(true);
 		ContactGUI.getContactsJList().setEnabled(true);
+		
 		
 		contactInfo.revalidate();
 		contactInfo.repaint();
