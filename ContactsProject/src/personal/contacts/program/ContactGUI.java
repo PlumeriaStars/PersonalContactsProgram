@@ -4,13 +4,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.util.Arrays;
 
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.tools.DiagnosticCollector;
 
 /* Contains code regarding the main GUI window
  * The main window is split into 3 panels
@@ -30,11 +28,14 @@ public class ContactGUI extends JFrame
 	//Constructor - contains calls to functions that create the various panels
 	public ContactGUI() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
 	{
+		Dimension frameDimension = new Dimension(550, 450);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLayout(new BorderLayout());
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		this.setLocationRelativeTo(null);		
-		this.setMinimumSize(new Dimension(550, 450));
+		this.setPreferredSize(frameDimension);
+		this.setMinimumSize(frameDimension);
+		this.setMaximumSize(frameDimension);
+		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		this.setTitle("Contacts Program");
 		
@@ -44,6 +45,8 @@ public class ContactGUI extends JFrame
 		
 		this.pack();
 		this.setVisible(true);
+		
+		//new DeleteContact();
 		
 	}
 
@@ -147,16 +150,22 @@ public class ContactGUI extends JFrame
 		mainMenu.setMnemonic(KeyEvent.VK_M);
 		menuBar.add(mainMenu);
 		
-		JMenuItem addContact = new JMenuItem("Add", KeyEvent.VK_1);
+		JMenuItem addContact = new JMenuItem("Add New", KeyEvent.VK_1);
 		addContact.setAccelerator(KeyStroke.getKeyStroke('N', KeyEvent.CTRL_DOWN_MASK));
 		addContact.setToolTipText("Add a new contact");
 		addContact.addActionListener(new GUIActionListeners.addContactAction("Add a new contact"));
 		mainMenu.add(addContact);
 		
-		JMenuItem editContact = new JMenuItem("Edit", KeyEvent.VK_2);
+		JMenuItem deleteContact = new JMenuItem("Delete Contact", KeyEvent.VK_2);
+		deleteContact.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0));
+		deleteContact.setToolTipText("Delete an existing contact");
+		deleteContact.addActionListener(new GUIActionListeners.deleteContactAction("Delete an existing Contact"));
+		mainMenu.add(deleteContact);
+		
+		JMenuItem editContact = new JMenuItem("Edit Contact", KeyEvent.VK_3);
 		editContact.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK));
 		editContact.setToolTipText("Edit an existing contact");
-		editContact.addActionListener(new GUIActionListeners.editContactAction("Edit and existing Contact", contactsJList.getSelectedValue(), contactsJList.getSelectedIndex()));
+		editContact.addActionListener(new GUIActionListeners.editContactAction("Edit and existing Contact"));
 		mainMenu.add(editContact);
 		
 		JMenuItem appearance = new JMenuItem("Change Appearance", KeyEvent.VK_3);
@@ -182,6 +191,7 @@ public class ContactGUI extends JFrame
 		optionsPanel.add(addContact);
 		
 		deleteContact = new JButton("Delete");
+		deleteContact.addActionListener(new GUIActionListeners.deleteContactAction("Delete an existing Contact"));;
 		optionsPanel.add(deleteContact);
 		
 		//In order to have two different buttons occupy the same grid square
@@ -191,24 +201,25 @@ public class ContactGUI extends JFrame
 		optionsPanel.add(editingPanel);
 		
 		editContact = new JButton("Edit Contact");
-		editContact.addActionListener(new GUIActionListeners.editContactAction("Edit and existing Contact", contactsJList.getSelectedValue(), contactsJList.getSelectedIndex()));
+		editContact.addActionListener(new GUIActionListeners.editContactAction("Edit an existing Contact"));
 		editContact.addActionListener(new ActionListener() 
 										{
 											@Override
 											public void actionPerformed(ActionEvent e) 
 											{
-												editingCard.next(editingPanel);
+												if(getCurrentlySelectedContact() != null)
+													editingCard.next(editingPanel);
 											}
 										});
 		editingPanel.add(editContact);
 		
 		editConfirm = new JButton("Save Edits");
-		editConfirm.addActionListener(new GUIActionListeners.editContactAction("Edit and existing Contact", contactsJList.getSelectedValue(), contactsJList.getSelectedIndex()));
+		editConfirm.addActionListener(new GUIActionListeners.editContactAction("Edit and existing Contact"));
 		editingPanel.add(editConfirm);
 		editConfirm.setVisible(false);
 		
 		editCancel = new JButton("Cancel Edits");
-		editCancel.addActionListener(new GUIActionListeners.editContactAction("Edit and existing Contact", contactsJList.getSelectedValue(), contactsJList.getSelectedIndex()));
+		editCancel.addActionListener(new GUIActionListeners.editContactAction("Edit and existing Contact"));
 		optionsPanel.add(editCancel);
 		editCancel.setVisible(false);
 		

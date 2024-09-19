@@ -23,9 +23,27 @@ public class GUIActionListeners
 		@Override
 		public void actionPerformed(ActionEvent e) 
 		{
-			AddContact addNew = new AddContact();
+			new AddContact();
 		}
 		
+	}
+	
+	//The add action calls the DeleteContact class when a component linked to this action is called
+	public static class deleteContactAction extends AbstractAction
+	{
+		
+		public deleteContactAction(String desc)
+		{
+			putValue(SHORT_DESCRIPTION, desc);
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) 
+		{	
+			if(ContactGUI.getCurrentlySelectedContact() != null)
+				new DeleteContact();
+		}
+			
 	}
 	
 	//The add action calls the EditContact class when a component linked to this action is called
@@ -34,7 +52,7 @@ public class GUIActionListeners
 	public static class editContactAction extends AbstractAction
 	{
 		
-		public editContactAction(String desc, Contact c, int cIndex)
+		public editContactAction(String desc)
 		{
 			putValue(SHORT_DESCRIPTION, desc);
 		}
