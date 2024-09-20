@@ -209,8 +209,9 @@ public class AddContact extends JDialog implements ActionListener
 											 addNewContact.getHomeAddress(), addNewContact.getEmailAddress(),
 											 birthday, addNewContact.getNotes());
 
+			ContactComparators compTemp = new ContactComparators();
 			ListOfContacts.addToContactsList(newContact);
-			ListOfContacts.sortContactsList(new ContactComparators().getCurrentComparator());
+			ListOfContacts.sortContactsList(compTemp.getCurrentComparator(), compTemp.getCurrentComparatorOrder());
 			this.setVisible(false);
 					
 		}

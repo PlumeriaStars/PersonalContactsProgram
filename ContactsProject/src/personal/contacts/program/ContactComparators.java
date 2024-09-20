@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 /* Contains various Comparators to sort Contact objects based on different fields
- * Default sort is ALPHABETICAL ORDER (DESCENDING) - 
- * Can use Collections.reverseOrder(Comparator) to achieve the opposite(ascending)
+ * Default sort is ALPHABETICAL ORDER (ASCENDING) - 
+ * Can use Collections.reverseOrder(Comparator) to achieve the opposite(descending)
  */
 public class ContactComparators 
 {
 	private static ArrayList<Comparator<Contact>> comparatorList = new ArrayList<Comparator<Contact>>();
 	private static int currentComparatorIndex = 0;
+	private static int currentComparatorOrder = 0;
 	
 	//Default constructor
 	public ContactComparators() 
@@ -39,7 +40,6 @@ public class ContactComparators
 				break;
 			default:
 				currentComparatorIndex = 0;
-					
 		}
 	}
 		
@@ -58,9 +58,21 @@ public class ContactComparators
 		}
 	}
 	
+	//Sets the current order - Descending or Ascending
+	public void setCurrentComparatorOrder(int order)
+	{
+		currentComparatorOrder = order;
+	}
+	
+	//Returns the current order - Descending or Ascending
+	public int getCurrentComparatorOrder()
+	{
+		return currentComparatorOrder;
+	}
+	
+	//Compares two contacts based on their combined "First Last" name string
 	public static class firstLastNameComparator implements Comparator<Contact>
 	{
-
 		@Override
 		public int compare(Contact c1, Contact c2) 
 		{
@@ -77,13 +89,12 @@ public class ContactComparators
 			//Else, the full name(first last) of this contact is alphabetically after the comparing contact
 			else
 				return c1FullName.compareToIgnoreCase(c2FullName);
-		}
-		
+		}		
 	}
 	
+	//Compares two contacts based on their combined "Last First" name string
 	public static class lastFirstNameComparator implements Comparator<Contact>
 	{
-
 		@Override
 		public int compare(Contact c1, Contact c2) 
 		{
@@ -100,7 +111,6 @@ public class ContactComparators
 			//Else, the full name(last first) of this contact is alphabetically after the comparing contact
 			else
 				return c1FullName.compareToIgnoreCase(c2FullName);
-		}
-		
+		}		
 	}
 }

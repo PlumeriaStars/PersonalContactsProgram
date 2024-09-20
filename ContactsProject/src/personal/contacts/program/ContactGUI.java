@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.Collections;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -20,15 +21,19 @@ import javax.swing.event.ListSelectionListener;
 public class ContactGUI extends JFrame
 {
 	private JPanel bg, infoPanel, jListPanel, optionsPanel;
-	private static JList<Contact> contactsJList;
 	private JScrollPane scrollPane;
+	private Dimension frameDimension;
+	private static JList<Contact> contactsJList;	
+	private static JComboBox<String> sortComboBox;
+	private static String[] sortingStyles = { "First Name, Ascending", "First Name, Descending",
+									   "Last Name, Ascending",  "Last Name, Descending"   };
 	static JButton addContact, deleteContact, editContact, editConfirm, editCancel, sortConfirm;
 	static ContactsPanel contactInfo;
 	
 	//Constructor - contains calls to functions that create the various panels
 	public ContactGUI() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
 	{
-		Dimension frameDimension = new Dimension(550, 450);
+		frameDimension = new Dimension(550, 450);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLayout(new BorderLayout());
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -71,7 +76,7 @@ public class ContactGUI extends JFrame
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.weightx = 0.1;
+        gbc.weightx = 0;
         gbc.weighty = 1;
         gbc.anchor = GridBagConstraints.NORTHWEST;
         gbc.fill = GridBagConstraints.BOTH;
@@ -79,6 +84,7 @@ public class ContactGUI extends JFrame
 		bg.add(fg);
 		
 		jListPanel = new JPanel(new BorderLayout());
+		jListPanel.setMinimumSize(new Dimension((int)(frameDimension.getWidth() / 6), (int)(frameDimension.getHeight() * 0.55)));
 		jListPanel.setBorder(new CompoundBorder(new TitledBorder("Contacts"), new EmptyBorder(4, 4, 4, 4)));
 		displayContactsJList();
 		fg.add(jListPanel, gbc);
@@ -224,13 +230,14 @@ public class ContactGUI extends JFrame
 		editCancel.setVisible(false);
 		
 		grid.setColumns(3);
-		JLabel sortLabel = new JLabel("Sorting Options");
+		JLabel sortLabel = new JLabel("Sorting Options", JLabel.CENTER);
 		optionsPanel.add(sortLabel);
 
-		JLabel sortComboBox = new JLabel("Sorting Combo Box");
+		sortComboBox = new JComboBox<String>(sortingStyles);
 		optionsPanel.add(sortComboBox);
 
 		sortConfirm = new JButton("Sort");
+		sortConfirm.addActionListener(new GUIActionListeners.sortContact("Sort Contacts List"));
 		optionsPanel.add(sortConfirm);
 	}
 	
@@ -238,11 +245,8 @@ public class ContactGUI extends JFrame
 	//Clears the infoPanel of the last selected contact's information
 	private void clearContactInfoPanel() 
 	{
-		
-		infoPanel.removeAll();
 		infoPanel.revalidate();
-		infoPanel.repaint();
-		
+		infoPanel.repaint();		
 	}
 	
 	//Gets the index of the contact currently selected in the JList
@@ -261,5 +265,48 @@ public class ContactGUI extends JFrame
 	public static JList<Contact> getContactsJList()
 	{
 		return contactsJList;
+	}
+	
+	//Gets the selected sorting style from the combo box
+	public static String getCurrentlySelectedSortingStyle()
+	{
+		return (String)sortComboBox.getSelectedItem();
+	}
+	
+	//Gets an array filled with all the sorting styles
+	public static String[] getSortingStyles()
+	{
+		return sortingStyles;
+	}
+	
+	//Using the index of the selected sorting style
+	//First, set the corresponding cell renderer
+	//Second, sort the actual JList
+	public static void setCurrentJListRenderer(int sorter)
+	{
+		ContactComparators comparator = new ContactComparators();
+		switch(sorter)
+		{
+			case 0: contactsJList.setCellRenderer(new ContactRenderers.FirstNameRenderer());
+					ListOfContacts.sortContactsList(new ContactComparators.firstLastNameComparator(), 0);
+					comparator.setCurrentComparatorOrder(0);
+				break;
+			case 1: contactsJList.setCellRenderer(new ContactRenderers.FirstNameRenderer()); 
+					ListOfContacts.sortContactsList(new ContactComparators.firstLastNameComparator(), 1);
+					comparator.setCurrentComparatorOrder(1);
+				break;
+			case 2: contactsJList.setCellRenderer(new ContactRenderers.LastNameRenderer());
+					ListOfContacts.sortContactsList(new ContactComparators.lastFirstNameComparator(), 0);
+					comparator.setCurrentComparatorOrder(0);
+				break;
+			case 3: contactsJList.setCellRenderer(new ContactRenderers.LastNameRenderer());
+					ListOfContacts.sortContactsList(new ContactComparators.lastFirstNameComparator(), 1);
+					comparator.setCurrentComparatorOrder(1);
+				break;
+			default:contactsJList.setCellRenderer(new ContactRenderers.FirstNameRenderer());
+					ListOfContacts.sortContactsList(new ContactComparators.firstLastNameComparator(), 0);
+					comparator.setCurrentComparatorOrder(0);
+				
+		}
 	}
 }

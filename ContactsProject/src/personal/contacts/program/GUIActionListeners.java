@@ -24,14 +24,12 @@ public class GUIActionListeners
 		public void actionPerformed(ActionEvent e) 
 		{
 			new AddContact();
-		}
-		
+		}		
 	}
 	
 	//The add action calls the DeleteContact class when a component linked to this action is called
 	public static class deleteContactAction extends AbstractAction
-	{
-		
+	{		
 		public deleteContactAction(String desc)
 		{
 			putValue(SHORT_DESCRIPTION, desc);
@@ -42,16 +40,14 @@ public class GUIActionListeners
 		{	
 			if(ContactGUI.getCurrentlySelectedContact() != null)
 				new DeleteContact();
-		}
-			
+		}			
 	}
 	
-	//The add action calls the EditContact class when a component linked to this action is called
+	//The edit action calls the EditContact class when a component linked to this action is called
 	//Buttons linked to editing in ContactGUI have no access modifier declared
 	// so that they can be accessed here, outside of the class
 	public static class editContactAction extends AbstractAction
-	{
-		
+	{			
 		public editContactAction(String desc)
 		{
 			putValue(SHORT_DESCRIPTION, desc);
@@ -73,7 +69,36 @@ public class GUIActionListeners
 				if(e.getSource().equals(ContactGUI.editCancel))
 					EditContact.revertContactInfoPanel();
 			}
+		}		
+	}
+	
+	//The sort action will sort the Contacts list based on the sorting style chosen by the user
+	//Sorting is done on button press rather than when a sorting style is first chosen in the combo box
+	public static class sortContact extends AbstractAction
+	{
+		private String[] sortingStyles = ContactGUI.getSortingStyles();
+		
+		public sortContact(String desc)
+		{
+			putValue(SHORT_DESCRIPTION, desc);
 		}
-			
+
+		@Override
+		public void actionPerformed(ActionEvent e) 
+		{
+			//Sorting style is set using a switch statement
+			//Uses the index of the selected sorted style to determine how to sort
+			if(ContactGUI.getContactsJList() != null)
+			{
+				if(ContactGUI.getCurrentlySelectedSortingStyle().equals(sortingStyles[0]))
+					ContactGUI.setCurrentJListRenderer(0);
+				else if(ContactGUI.getCurrentlySelectedSortingStyle().equals(sortingStyles[1]))
+					ContactGUI.setCurrentJListRenderer(1);
+				else if(ContactGUI.getCurrentlySelectedSortingStyle().equals(sortingStyles[2]))
+					ContactGUI.setCurrentJListRenderer(2);
+				else if(ContactGUI.getCurrentlySelectedSortingStyle().equals(sortingStyles[3]))
+					ContactGUI.setCurrentJListRenderer(3);
+			}
+		}
 	}
 }

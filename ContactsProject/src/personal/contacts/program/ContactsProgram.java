@@ -31,7 +31,7 @@ public class ContactsProgram
 		ListOfContacts.addToContactsList(c4);
 		
 		//Collections.sort(ListOfContacts.getContactsList(), Collections.reverseOrder(new ContactComparators.lastFirstNameComparator()));
-		ListOfContacts.sortContactsList(new ContactComparators.firstLastNameComparator());	
+		ListOfContacts.sortContactsList(new ContactComparators.firstLastNameComparator(), 0);	
 		
 		//Collections.sort(ListOfContacts.getContactsList(), new ContactComparators.lastFirstNameComparator());
 

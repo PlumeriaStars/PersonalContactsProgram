@@ -41,14 +41,20 @@ public class ListOfContacts
 	//In order to sort the DefaultListModel, first copy the contents of the model into an ArrayList
 	//Then, call the ArrayList's sorting method () using a comparator defined in ContactComparators
 	//Clear the DefaultListModel, add the elements of the sorted ArrayList back into the DefaultListModel
-	public static void sortContactsList(Comparator<Contact> comparator)
+	//Order represents asc/desc order
+	//	0 - Ascending Order			1 - Descending Order
+	public static void sortContactsList(Comparator<Contact> comparator, int order)
 	{
 		ArrayList<Contact> cList = Collections.list(contactsList.elements());
-		Collections.sort(cList, comparator);;
+
+		if(order == 0)
+			Collections.sort(cList, comparator);
+		else if(order == 1)
+			Collections.sort(cList, Collections.reverseOrder(comparator));
+		
 		contactsList.clear();
 		
 		for(Contact c: cList)
 			contactsList.addElement(c);
 	}
-
 }
