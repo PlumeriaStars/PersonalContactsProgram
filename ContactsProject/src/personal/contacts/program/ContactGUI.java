@@ -20,9 +20,9 @@ import javax.swing.event.ListSelectionListener;
  */
 public class ContactGUI extends JFrame
 {
-	private JPanel bg, infoPanel, jListPanel, optionsPanel;
-	private JScrollPane scrollPane;
-	private Dimension frameDimension;
+	private static JPanel bg, infoPanel, jListPanel, optionsPanel;
+	private static JScrollPane scrollPane;
+	private static Dimension frameDimension;
 	private static JList<Contact> contactsJList;	
 	private static JComboBox<String> sortComboBox;
 	private static String[] sortingStyles = { "First Name, Ascending", "First Name, Descending",
@@ -139,7 +139,7 @@ public class ContactGUI extends JFrame
 	}
 
 	//Uses the ContactsPanel template to display the information of Contact c
-	private void displayContactInfo(Contact c)
+	protected static void displayContactInfo(Contact c)
 	{
 		contactInfo = new ContactsPanel(c);
 		infoPanel.add(contactInfo);       
@@ -243,8 +243,9 @@ public class ContactGUI extends JFrame
 	
 	
 	//Clears the infoPanel of the last selected contact's information
-	private void clearContactInfoPanel() 
+	protected static void clearContactInfoPanel() 
 	{
+		infoPanel.removeAll();
 		infoPanel.revalidate();
 		infoPanel.repaint();		
 	}

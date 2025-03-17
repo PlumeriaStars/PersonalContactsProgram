@@ -54,13 +54,14 @@ public class EditContact
 		
 		revertFields();
 		ListOfContacts.setAtContactsList(newContact, currentContactIndex);
+		ContactGUI.displayContactInfo(newContact);
 	}
 	
 	//Discards and changes made by the user by re-setting the current contact at its corresponding index
 	public static void revertContactInfoPanel()
 	{
 		revertFields();
-		contactInfo.setFieldData(currentContact);	
+		ContactGUI.displayContactInfo(currentContact);
 	}
 	
 	//Returns the fields to no longer be editable
@@ -76,9 +77,6 @@ public class EditContact
 		ContactGUI.deleteContact.setEnabled(true);
 		ContactGUI.sortConfirm.setEnabled(true);
 		ContactGUI.getContactsJList().setEnabled(true);
-		
-		
-		contactInfo.revalidate();
-		contactInfo.repaint();
+		ContactGUI.clearContactInfoPanel();
 	}
 }
