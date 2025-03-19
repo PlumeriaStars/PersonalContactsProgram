@@ -64,7 +64,26 @@ public class GUIActionListeners
 					EditContact.makeContactInfoEditable();
 				
 				if(e.getSource().equals(ContactGUI.editConfirm))
-					EditContact.saveEditedContact();
+				{
+					//Check if the user triggered any errors when typing in the edits
+					EditContact.checkForErrors();
+					
+					//If the error flag isn't tripped, continue saving the edits
+					if(!EditContact.getErrorFlag())
+					   EditContact.saveEditedContact();
+					//Else, an error was found
+					else
+					{
+						//"num" type errors means the home/cell number fields did not contain 10 digits
+						if(EditContact.getErrorType().equalsIgnoreCase("num"))
+						{
+							//Display error pop-up
+							new ErrorDialog.NumberLengthError();
+							//Once the user closes the pop-up, reset the error flag/type
+							EditContact.revertErrors();
+						}
+					}
+				}
 				
 				if(e.getSource().equals(ContactGUI.editCancel))
 					EditContact.revertContactInfoPanel();

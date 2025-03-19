@@ -160,26 +160,53 @@ public class Contact implements Comparable<Contact>
 		/* Phone Numbers stored as continuous numbers
 		 * Conevert to string and add delimiter: # # # - # # # - # # #  #
 		 * Index                                 0 1 2 3 4 5 6 7 8 9 10 11
+		 * Only applies to full numbers
+		 * If the user left the number fields empty, no need to build a new string using delimiters
 		 */
+		StringBuilder hNum = null;
+		if(String.valueOf(this.homeNumber).length() == 10)
+		{
+			hNum= new StringBuilder(String.valueOf(this.homeNumber));
+			hNum.insert(3, '-');
+			hNum.insert(7, '-');
+		}
 		
-		StringBuilder hNum = new StringBuilder(String.valueOf(this.homeNumber));
-		hNum.insert(3, '-');
-		hNum.insert(7, '-');
+		StringBuilder cNum = null;
+		if(String.valueOf(this.cellNumber).length() == 10)
+		{
+			cNum = new StringBuilder(String.valueOf(this.cellNumber));
+			cNum.insert(3, '-');
+			cNum.insert(7, '-');
+		}
 		
-		StringBuilder cNum = new StringBuilder(String.valueOf(this.cellNumber));
-		cNum.insert(3, '-');
-		cNum.insert(7, '-');
-		
-		String result = String.format("%1$s %2$s \n" + 
-									  "%3$s \n" +
-									  "%4$s \n" +
-									  "%5$s \n" + 
-									  "%6$s \n" +
-									  "%7$tD \n" +
-									  "%8$s", 
-									  this.firstName, this.lastName, hNum.toString(), cNum.toString(),
-									  this.homeAddress, this.emailAddress, this.birthday, this.notes
-									 );
+		String result = "";
+		if(hNum != null && cNum != null)
+		{
+			result = String.format("%1$s %2$s \n" + 
+					  "%3$s \n" +
+					  "%4$s \n" +
+					  "%5$s \n" + 
+					  "%6$s \n" +
+					  "%7$tD \n" +
+					  "%8$s", 
+					  this.firstName, this.lastName, hNum.toString(), cNum.toString(),
+					  this.homeAddress, this.emailAddress, this.birthday, this.notes
+					 );
+		}
+		else
+		{
+			result = String.format("%1$s %2$s \n" + 
+					  "%3$s \n" +
+					  "%4$s \n" +
+					  "%5$s \n" + 
+					  "%6$s \n" +
+					  "%7$tD \n" +
+					  "%8$s", 
+					  this.firstName, this.lastName, String.valueOf(this.homeNumber), String.valueOf(this.cellNumber),
+					  this.homeAddress, this.emailAddress, this.birthday, this.notes
+					 );
+		}
+			
 		return result;
 	}
 }

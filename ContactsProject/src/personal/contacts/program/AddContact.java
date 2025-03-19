@@ -23,7 +23,9 @@ import javax.swing.JPanel;
 public class AddContact extends JDialog implements ActionListener
 {
 	private JButton addButton, cancelButton;
-	private ContactsPanel addNewContact;
+	private static ContactsPanel addNewContact;
+	private static Boolean errorFound = false;
+	private static String errorType = "";
 	
 	//Constructor - creates the pop-up
 	public AddContact() 
@@ -203,18 +205,34 @@ public class AddContact extends JDialog implements ActionListener
 		//If the Add button is pressed, create the contact and add it to the contacts list
 		if(e.getSource() == addButton)
 		{
-			LocalDate birthday = LocalDate.of(addNewContact.getBirthYear(), addNewContact.getBirthMonthIndex(), addNewContact.getBirthDay());
+			//Check if the user triggered any errors when filling out the fields
+			checkForErrors();
 			
-			Contact newContact = new Contact(addNewContact.getFirstName(), addNewContact.getLastName(),
-											 addNewContact.getHomeNum(), addNewContact.getCellNum(),
-											 addNewContact.getHomeAddress(), addNewContact.getEmailAddress(),
-											 birthday, addNewContact.getNotes());
+			//If the error flag isn't tripped, add the new contact
+			if(!errorFound)
+			{
+				LocalDate birthday = LocalDate.of(addNewContact.getBirthYear(), addNewContact.getBirthMonthIndex(), addNewContact.getBirthDay());
+				
+				Contact newContact = new Contact(addNewContact.getFirstName(), addNewContact.getLastName(),
+												 addNewContact.getHomeNum(), addNewContact.getCellNum(),
+												 addNewContact.getHomeAddress(), addNewContact.getEmailAddress(),
+												 birthday, addNewContact.getNotes());
 
-			ContactComparators compTemp = new ContactComparators();
-			ListOfContacts.addToContactsList(newContact);
-			ListOfContacts.sortContactsList(compTemp.getCurrentComparator(), compTemp.getCurrentComparatorOrder());
-			JsonReadWrite.writeToFile();
-			this.setVisible(false);
+				ContactComparators compTemp = new ContactComparators();
+				ListOfContacts.addToContactsList(newContact);
+				ListOfContacts.sortContactsList(compTemp.getCurrentComparator(), compTemp.getCurrentComparatorOrder());
+				JsonReadWrite.writeToFile();
+				this.setVisible(false);
+			}
+			else
+			{	
+				//"num" type errors means the home/cell number fields did not contain 10 digits
+				if(errorType.equalsIgnoreCase("num"))
+					new ErrorDialog.NumberLengthError();
+				
+				//Once the user closes the pop-up, reset the error flag/type
+				revertErrors();
+			}
 					
 		}
 		//If the Cancel button is pressed, set the pop-up to no longer be visible
@@ -223,6 +241,45 @@ public class AddContact extends JDialog implements ActionListener
 			this.setVisible(false);
 		}
 		
+	}
+	
+	public static Boolean getErrorFlag()
+	{
+		return errorFound;
+	}
+	
+	public static String getErrorType()
+	{
+		return errorType;
+	}
+	
+	//There is a chance contacts don't have a number
+	//In that case, no error should be found if the field is empty
+	//If the field is not empty and does not have 10 digits, trigger the error flag
+	public static void checkForErrors()
+	{
+			
+	   if(addNewContact.getHomeNum() == 0)
+	   { }
+	   else if(String.valueOf(addNewContact.getHomeNum()).length() != 10)
+	   {
+	      errorFound = true;
+	      errorType = "num";
+	   }
+			
+	   if(addNewContact.getCellNum() == 0)
+	   { }
+	   else if(String.valueOf(addNewContact.getCellNum()).length() != 10)
+	   {
+	      errorFound = true;
+	      errorType = "num";
+	   }
+	}
+	
+	public static void revertErrors() 
+	{
+		errorFound = false;
+		errorType = "";
 	}
 	
 }

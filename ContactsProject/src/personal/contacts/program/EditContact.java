@@ -12,6 +12,8 @@ public class EditContact
 	private static ContactsPanel contactInfo;
 	private static Contact currentContact;
 	private static int currentContactIndex;
+	private static Boolean errorFound = false;
+	private static String errorType = "";
 	
 	//Stores the original contact and its list index
 	public static void setCurrentlyEditing()
@@ -79,5 +81,44 @@ public class EditContact
 		ContactGUI.sortConfirm.setEnabled(true);
 		ContactGUI.getContactsJList().setEnabled(true);
 		ContactGUI.clearContactInfoPanel();
+	}
+	
+	public static Boolean getErrorFlag()
+	{
+		return errorFound;
+	}
+	
+	public static String getErrorType()
+	{
+		return errorType;
+	}
+	
+	//There is a chance contacts don't have a number
+	//In that case, no error should be found if the field is empty
+	//If the field is not empty and does not have 10 digits, trigger the error flag
+	public static void checkForErrors()
+	{
+		
+		if(contactInfo.getHomeNum() == 0)
+		{ }
+		else if(String.valueOf(contactInfo.getHomeNum()).length() != 10)
+		{
+			errorFound = true;
+			errorType = "num";
+		}
+		
+		if(contactInfo.getCellNum() == 0)
+		{ }
+		else if(String.valueOf(contactInfo.getCellNum()).length() != 10)
+		{
+			errorFound = true;
+			errorType = "num";
+		}
+	}
+
+	public static void revertErrors() 
+	{
+		errorFound = false;
+		errorType = "";
 	}
 }

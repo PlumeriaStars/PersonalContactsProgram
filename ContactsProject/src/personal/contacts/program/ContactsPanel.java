@@ -64,15 +64,23 @@ public class ContactsPanel extends JPanel
 	}
 	
 	//Getter - gets the user-inputed text in the Home Number Field
+	//         if the field is empty, return 0
 	public long getHomeNum()
 	{
-		return Long.parseLong(homeNum.getText());
+		if(!homeNum.getText().isEmpty())
+			return Long.parseLong(homeNum.getText());
+		else
+			return 0;
 	}
 	
 	//Getter - gets the user-inputed text in the Cell Number Field
+	//         if the field is empty, return 0
 	public long getCellNum()
 	{
-		return Long.parseLong(cellNum.getText());
+		if(!cellNum.getText().isEmpty())
+			return Long.parseLong(cellNum.getText());
+		else
+			return 0;	
 	}
 	
 	//Getter - gets the user-inputed text in the Home Address Field
