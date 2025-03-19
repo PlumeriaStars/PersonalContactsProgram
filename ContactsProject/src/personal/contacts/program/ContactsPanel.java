@@ -6,7 +6,6 @@ import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.time.Year;
-import java.util.Calendar;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
@@ -95,13 +94,15 @@ public class ContactsPanel extends JPanel
 	}
 	
 	//Getter - gets the index of the currently selected month in the combo box
+	//Month array starts at 0 while LocalDate month starts at 1,
+	// so once the correct month is found add 1 to the index before returning it
 	public int getBirthMonthIndex()
 	{		
 		int index = 0;
 		for(String currMonth: months)
 		{
 			if(currMonth.equals(birthMonth.getSelectedItem().toString()))
-				return index;
+				return index+=1;
 		
 			index++;
 		}
@@ -282,9 +283,9 @@ public class ContactsPanel extends JPanel
 		homeAddr.setText(c.getHomeAddress());
 		emailAddr.setText(c.getEmailAddress());
 		
-		monthField.setText("" + months[c.getBirthday().get(Calendar.MONTH)]);
-		dayField.setText("" + c.getBirthday().get(Calendar.DAY_OF_MONTH));
-		yearField.setText("" + c.getBirthday().get(Calendar.YEAR));
+		monthField.setText("" + months[c.getBirthday().getMonthValue()-1]);
+		dayField.setText("" + c.getBirthday().getDayOfMonth());
+		yearField.setText("" + c.getBirthday().getYear());
 
 		notes.setText(c.getNotes());
  	}

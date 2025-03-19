@@ -1,7 +1,11 @@
 package personal.contacts.program;
 
-import java.util.Calendar;
+import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+@JsonPropertyOrder({"firstName", "lastName", "homeNumber", "cellNumber", 
+	                "homeAddress", "emailAddress", "birthday", "notes"})
 public class Contact implements Comparable<Contact>
 {
 	private String firstName;
@@ -10,7 +14,7 @@ public class Contact implements Comparable<Contact>
 	private long cellNumber;
 	private String homeAddress;
 	private String emailAddress;
-	private Calendar birthday;
+	private LocalDate birthday;
 	private String notes;
 
 
@@ -28,7 +32,7 @@ public class Contact implements Comparable<Contact>
     }
     
     //Constructor - Overloaded
-    public Contact(String fName, String lName, long hNum, long cNum, String hAddr, String eAddr, Calendar bday, String n)
+    public Contact(String fName, String lName, long hNum, long cNum, String hAddr, String eAddr, LocalDate bday, String n)
     {
     	this.firstName = fName;		
     	this.lastName = lName;
@@ -71,7 +75,7 @@ public class Contact implements Comparable<Contact>
     	return this.emailAddress;
     }
     
-    public Calendar getBirthday()
+    public LocalDate getBirthday()
     {
     	return this.birthday;
     }
@@ -112,9 +116,9 @@ public class Contact implements Comparable<Contact>
     	this.emailAddress = eAddr;
     }
     
-    public void setBirthday(Calendar bday)
+    public void setBirthday(String bday)
     {
-    	this.birthday = bday;
+    	this.birthday = LocalDate.parse(bday);
     }
     
     public void setNotes(String n)

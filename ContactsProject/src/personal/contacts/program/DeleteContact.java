@@ -12,6 +12,7 @@ import javax.swing.border.EtchedBorder;
 /* Class that directly deals with deleting a contact
  * When removing a contact, a pop-up appears asking the user to confirm the action
  * If the user confirms the action, the selected contact is removed from the list
+ * After the contact is successfully deleted, the JSON holding all the contacts is updated
  */
 public class DeleteContact extends JDialog implements ActionListener 
 {
@@ -92,6 +93,7 @@ public class DeleteContact extends JDialog implements ActionListener
 		if(e.getSource() == deleteButton)
 		{
 			ListOfContacts.removeFromContactList(toBeDeletedIndex);
+			JsonReadWrite.writeToFile();
 			dispose();
 		}
 		//Else, dispose of this window

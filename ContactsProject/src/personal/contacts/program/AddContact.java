@@ -6,7 +6,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.Calendar;
+import java.time.LocalDate;
 import java.util.Scanner;
 
 import javax.swing.JButton;
@@ -18,6 +18,7 @@ import javax.swing.JPanel;
  * Also includes two buttons - Add    -> adds the newly created contact to the contacts list
  * 							   Cancel -> closes the pop-up by setting its visibility to false
  * The user must close the pop-up in order to return to the main program window
+ * After the contact is successfully added, the JSON holding all the contacts is updated
  */
 public class AddContact extends JDialog implements ActionListener
 {
@@ -167,8 +168,9 @@ public class AddContact extends JDialog implements ActionListener
 				notCorrect = kb.next();		
 				kb.nextLine();
 			} while(notCorrect.equals("N") || notCorrect.equals("n"));
-			Calendar birthday = new Calendar.Builder().setDate(bYear, bMonth-1, bDay).build();
-			c.setBirthday(birthday);
+			
+			String bString = bYear + "-" + bMonth + "-" + bDay;
+			c.setBirthday(bString);
 			System.out.println();
 
 			String notes;
@@ -201,9 +203,8 @@ public class AddContact extends JDialog implements ActionListener
 		//If the Add button is pressed, create the contact and add it to the contacts list
 		if(e.getSource() == addButton)
 		{
-			Calendar birthday = new Calendar.Builder().setDate(addNewContact.getBirthYear(),
-															   addNewContact.getBirthMonthIndex(),
-															   addNewContact.getBirthDay()).build();
+			LocalDate birthday = LocalDate.of(addNewContact.getBirthYear(), addNewContact.getBirthMonthIndex(), addNewContact.getBirthDay());
+			
 			Contact newContact = new Contact(addNewContact.getFirstName(), addNewContact.getLastName(),
 											 addNewContact.getHomeNum(), addNewContact.getCellNum(),
 											 addNewContact.getHomeAddress(), addNewContact.getEmailAddress(),
@@ -212,6 +213,7 @@ public class AddContact extends JDialog implements ActionListener
 			ContactComparators compTemp = new ContactComparators();
 			ListOfContacts.addToContactsList(newContact);
 			ListOfContacts.sortContactsList(compTemp.getCurrentComparator(), compTemp.getCurrentComparatorOrder());
+			JsonReadWrite.writeToFile();
 			this.setVisible(false);
 					
 		}

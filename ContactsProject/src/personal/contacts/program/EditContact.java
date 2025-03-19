@@ -1,10 +1,11 @@
 package personal.contacts.program;
 
-import java.util.Calendar;
+import java.time.LocalDate;
 
 /* Class that deals only with editing an existing contact
  * Edits are done in the program's main window by setting the text fields to be editable
  * To directly access the contact info panel found in ContactGUI, that panel has been given no access modifier
+ * After the contact is edited, the JSON holding all the contacts is updated
  */
 public class EditContact 
 {
@@ -44,9 +45,8 @@ public class EditContact
 	//Adds the edited contact to the contact's current index
 	public static void saveEditedContact()
 	{
-		Calendar birthday = new Calendar.Builder().setDate(contactInfo.getBirthYear(),
-														   contactInfo.getBirthMonthIndex(),
-														   contactInfo.getBirthDay()).build();
+		LocalDate birthday = LocalDate.of(contactInfo.getBirthYear(), contactInfo.getBirthMonthIndex(), contactInfo.getBirthDay());
+
 		Contact newContact = new Contact(contactInfo.getFirstName(), contactInfo.getLastName(),
 										 contactInfo.getHomeNum(), contactInfo.getCellNum(),
 										 contactInfo.getHomeAddress(), contactInfo.getEmailAddress(),
@@ -55,6 +55,7 @@ public class EditContact
 		revertFields();
 		ListOfContacts.setAtContactsList(newContact, currentContactIndex);
 		ContactGUI.displayContactInfo(newContact);
+		JsonReadWrite.writeToFile();
 	}
 	
 	//Discards and changes made by the user by re-setting the current contact at its corresponding index
