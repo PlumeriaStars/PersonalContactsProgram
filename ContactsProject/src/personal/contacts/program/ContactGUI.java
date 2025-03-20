@@ -10,6 +10,7 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.text.DefaultTextUI;
 
 /* Contains code regarding the main GUI window
  * The main window is split into 3 panels
@@ -27,13 +28,15 @@ public class ContactGUI extends JFrame
 	private static JComboBox<String> sortComboBox;
 	private static String[] sortingStyles = { "First Name, Ascending", "First Name, Descending",
 									   "Last Name, Ascending",  "Last Name, Descending"   };
+	private Font defaultTextFont = new Font("SansSerif", Font.PLAIN, 12);
+	
 	static JButton addContact, deleteContact, editContact, editConfirm, editCancel, sortConfirm;
 	static ContactsPanel contactInfo;
 	
 	//Constructor - contains calls to functions that create the various panels
 	public ContactGUI() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
 	{
-		frameDimension = new Dimension(550, 450);
+		frameDimension = new Dimension(650, 500);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLayout(new BorderLayout());
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -47,11 +50,10 @@ public class ContactGUI extends JFrame
 		addBackgroundPanel();
 		addForegroundPanel();
 		topMenuBar();
+		componentFont(this.rootPane);
 		
 		this.pack();
 		this.setVisible(true);
-		
-		//new DeleteContact();
 		
 	}
 
@@ -83,9 +85,11 @@ public class ContactGUI extends JFrame
 		fg.setBackground(Color.lightGray);
 		bg.add(fg);
 		
+		TitledBorder cTitle = new TitledBorder("Contacts");
 		jListPanel = new JPanel(new BorderLayout());
-		jListPanel.setMinimumSize(new Dimension((int)(frameDimension.getWidth() / 6), (int)(frameDimension.getHeight() * 0.55)));
-		jListPanel.setBorder(new CompoundBorder(new TitledBorder("Contacts"), new EmptyBorder(4, 4, 4, 4)));
+		jListPanel.setMinimumSize(new Dimension((int)(frameDimension.getWidth() / 5), (int)(frameDimension.getHeight() * 0.55)));		
+		cTitle.setTitleFont(defaultTextFont);
+		jListPanel.setBorder(new CompoundBorder(cTitle, new EmptyBorder(4, 4, 4, 4)));
 		displayContactsJList();
 		fg.add(jListPanel, gbc);
 		
@@ -93,7 +97,9 @@ public class ContactGUI extends JFrame
 		gbc.gridx++;
 		gbc.weightx = 1;
 		infoPanel = new JPanel(new BorderLayout());
-		infoPanel.setBorder(new CompoundBorder(new TitledBorder("Detailed Information"), new EmptyBorder(4, 4, 4, 4)));
+		TitledBorder iTitle = new TitledBorder("Detailed Information");
+		iTitle.setTitleFont(defaultTextFont);
+		infoPanel.setBorder(new CompoundBorder(iTitle, new EmptyBorder(4, 4, 4, 4)));
 		fg.add(infoPanel, gbc);
 		
 		gbc.gridx = 0;
@@ -176,7 +182,7 @@ public class ContactGUI extends JFrame
 		
 		JMenuItem appearance = new JMenuItem("Change Appearance", KeyEvent.VK_3);
 		appearance.setToolTipText("Customze the program's look");
-		mainMenu.add(appearance);
+		//mainMenu.add(appearance);
 		
 		this.setJMenuBar(menuBar);
 	}
@@ -187,17 +193,21 @@ public class ContactGUI extends JFrame
 	private void bottomOptionsBar()
 	{
 		GridLayout grid = new GridLayout(2, 0, 8, 4);
+		TitledBorder title = new TitledBorder("Options");
+		title.setTitleFont(defaultTextFont);
 		optionsPanel = new JPanel(grid);
-		optionsPanel.setBorder(new CompoundBorder(new TitledBorder("Options"), new EmptyBorder(4, 4, 4, 4)));
+		optionsPanel.setBorder(new CompoundBorder(title, new EmptyBorder(4, 4, 4, 4)));
 		optionsPanel.setBackground(Color.lightGray);
 
 		
 		addContact = new JButton("Add New");
 		addContact.addActionListener(new GUIActionListeners.addContactAction("Add a new Contact"));
+		addContact.setBackground(Color.lightGray);
 		optionsPanel.add(addContact);
 		
 		deleteContact = new JButton("Delete");
 		deleteContact.addActionListener(new GUIActionListeners.deleteContactAction("Delete an existing Contact"));;
+		deleteContact.setBackground(Color.lightGray);
 		optionsPanel.add(deleteContact);
 		
 		//In order to have two different buttons occupy the same grid square
@@ -217,20 +227,24 @@ public class ContactGUI extends JFrame
 													editingCard.next(editingPanel);
 											}
 										});
+		editContact.setBackground(Color.lightGray);
 		editingPanel.add(editContact);
 		
 		editConfirm = new JButton("Save Edits");
 		editConfirm.addActionListener(new GUIActionListeners.editContactAction("Edit and existing Contact"));
+		editConfirm.setBackground(Color.lightGray);
 		editingPanel.add(editConfirm);
 		editConfirm.setVisible(false);
 		
 		editCancel = new JButton("Cancel Edits");
 		editCancel.addActionListener(new GUIActionListeners.editContactAction("Edit and existing Contact"));
+		editCancel.setBackground(Color.lightGray);
 		optionsPanel.add(editCancel);
 		editCancel.setVisible(false);
 		
 		grid.setColumns(3);
-		JLabel sortLabel = new JLabel("Sorting Options", JLabel.CENTER);
+		JLabel sortLabel = new JLabel("<html><em>Sorting Options:</em></html>", JLabel.CENTER);
+		sortLabel.setBackground(Color.lightGray);
 		optionsPanel.add(sortLabel);
 
 		sortComboBox = new JComboBox<String>(sortingStyles);
@@ -238,6 +252,7 @@ public class ContactGUI extends JFrame
 
 		sortConfirm = new JButton("Sort");
 		sortConfirm.addActionListener(new GUIActionListeners.sortContact("Sort Contacts List"));
+		sortConfirm.setBackground(Color.lightGray);
 		optionsPanel.add(sortConfirm);
 	}
 	
@@ -248,6 +263,27 @@ public class ContactGUI extends JFrame
 		infoPanel.removeAll();
 		infoPanel.revalidate();
 		infoPanel.repaint();		
+	}
+	
+	//Sets the Font of the main windows
+	private void setTextFont() 
+	{
+		UIDefaults defaultUI = UIManager.getDefaults();
+		defaultUI.put("Button.font", defaultTextFont);
+		defaultUI.put("Label.font", defaultTextFont);
+		defaultUI.put("ComboBox.font", defaultTextFont);
+		defaultUI.put("TextArea.font", defaultTextFont); 
+	}
+	
+	private void componentFont(Component c) 
+	{
+		c.setFont(defaultTextFont);
+		
+		if(c instanceof Container)
+		{
+			for(Component child : ((Container) c).getComponents())
+				componentFont(child);
+		}
 	}
 	
 	//Gets the index of the contact currently selected in the JList

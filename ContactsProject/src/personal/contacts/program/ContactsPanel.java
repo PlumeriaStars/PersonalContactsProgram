@@ -1,5 +1,8 @@
 package personal.contacts.program;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -28,11 +31,15 @@ public class ContactsPanel extends JPanel
 								"August", "September", "October", "November", "December"};
 	private int startingYear;
 	
+	private Font defaultTextFont = new Font("SansSerif", Font.PLAIN, 12);
+	
 	//Constructor - used when creating an empty contact panel to be edited
 	public ContactsPanel(String title) 
 	{ 
 		createEmptyPanel();
-		this.setBorder(new CompoundBorder(new TitledBorder(title), new EmptyBorder(8, 8, 8, 8)));
+		TitledBorder t = new TitledBorder(title);
+		t.setTitleFont(defaultTextFont);
+		this.setBorder(new CompoundBorder(t, new EmptyBorder(8, 8, 8, 8)));
 		setBirthdayComboBoxVisibilty(true);
 		setBirthdayFieldVisibilty(false);
 	}
@@ -140,6 +147,7 @@ public class ContactsPanel extends JPanel
 	//birthDay combo box is dependent on birthMonth combo box, the selectable days change based on the selected month
  	private void createEmptyPanel() 
 	{
+ 		this.setBackground(Color.lightGray);
 		this.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
@@ -148,6 +156,7 @@ public class ContactsPanel extends JPanel
 		gbc.weighty = 0.01;
 		gbc.anchor = GridBagConstraints.NORTHWEST;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.insets = new Insets(0, 0, 0, 0);
 		
 		this.add(new JLabel("First Name: "), gbc);
 		gbc.gridx += 2;
@@ -174,30 +183,30 @@ public class ContactsPanel extends JPanel
 		gbc.gridy = 0;
 		gbc.weightx = 1;
 		
-		firstName = new JTextField();
+		firstName = new JTextField(12);
 		this.add(firstName, gbc);
 		
 		gbc.gridx += 2;
-		lastName = new JTextField();
+		lastName = new JTextField(12);
 		this.add(lastName, gbc);
 			
 		gbc.gridx = 1;
 		gbc.gridy++;
-		homeNum = new JTextField();
+		homeNum = new JTextField(12);
 		this.add(homeNum, gbc);
 		
 		gbc.gridx += 2;
-		cellNum = new JTextField();
+		cellNum = new JTextField(12);
 		this.add(cellNum, gbc);
 		
 		gbc.gridx = 1;
-		gbc.gridwidth = 4;
+		gbc.gridwidth = 3;
 		gbc.gridy++;
-		homeAddr = new JTextField();
+		homeAddr = new JTextField(12);
 		this.add(homeAddr, gbc);
 		
 		gbc.gridy++;
-		emailAddr = new JTextField();
+		emailAddr = new JTextField(12);
 		this.add(emailAddr, gbc);
 		
 		
@@ -257,14 +266,24 @@ public class ContactsPanel extends JPanel
 		gbc.gridy++;
 		gbc.gridheight = 3;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		notes = new JTextArea();
+		notes = new JTextArea(6, 30);
 		notes.setLineWrap(true);
 		this.add(notes, gbc);
+		
+		setTextFont();
 		
 		this.setOpaque(true);
 	}
  	
- 	//Fills in the birthDay combo box with the specified number of days
+ 	private void setTextFont() 
+ 	{
+ 		for(Component c: this.getComponents())
+ 		{
+ 			c.setFont(defaultTextFont);
+ 		}	
+	}
+
+	//Fills in the birthDay combo box with the specified number of days
  	private void fillDays(int numDays)
  	{
  		for(int i = 0; i < numDays; i++)

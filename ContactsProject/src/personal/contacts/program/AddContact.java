@@ -1,6 +1,7 @@
 package personal.contacts.program;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -30,6 +31,7 @@ public class AddContact extends JDialog implements ActionListener
 	//Constructor - creates the pop-up
 	public AddContact() 
 	{ 
+		
 		this.setTitle("Add New Contact");
 		this.setPreferredSize(new Dimension(450, 300));
 		this.setResizable(false);
@@ -41,9 +43,14 @@ public class AddContact extends JDialog implements ActionListener
 		this.add(addNewContact);
 		
 		JPanel buttonPanel = new JPanel();
+		buttonPanel.setBackground(Color.lightGray);
 		buttonPanel.setPreferredSize(new Dimension(this.getWidth(), 40));
 		addButton = new JButton("Add");
+		addButton.setFont(this.getFont());
+		addButton.setBackground(Color.lightGray);
 		cancelButton = new JButton("Cancel");
+		cancelButton.setFont(this.getFont());
+		cancelButton.setBackground(Color.lightGray);
 		addButton.addActionListener(this);
 		cancelButton.addActionListener(this);
 		buttonPanel.add(addButton);
