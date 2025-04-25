@@ -21,7 +21,7 @@ import javax.swing.text.DefaultTextUI;
  */
 public class ContactGUI extends JFrame
 {
-	private static JPanel bg, infoPanel, jListPanel, optionsPanel;
+	private static JPanel bg, infoPanel, jListPanel, optionsPanel, sortingPanel;
 	private static JScrollPane scrollPane;
 	private static Dimension frameDimension;
 	private static JList<Contact> contactsJList;	
@@ -100,17 +100,19 @@ public class ContactGUI extends JFrame
 		TitledBorder iTitle = new TitledBorder("Detailed Information");
 		iTitle.setTitleFont(defaultTextFont);
 		infoPanel.setBorder(new CompoundBorder(iTitle, new EmptyBorder(4, 4, 4, 4)));
+		infoPanel.setBackground(Color.lightGray);
 		fg.add(infoPanel, gbc);
 		
 		gbc.gridx = 0;
 		gbc.gridy++;
 		gbc.gridwidth = 2;
 		gbc.weightx = 0;
-        gbc.weighty = 0.05;
+        gbc.weighty = 0;
 		
-		infoPanel.setBackground(Color.lightGray);
 		bottomOptionsBar();
 		fg.add(optionsPanel, gbc);
+		gbc.gridy++;
+		fg.add(sortingPanel, gbc);
 	}
 	
 	//Creates and displays the JList found in the contactsPanel
@@ -192,7 +194,7 @@ public class ContactGUI extends JFrame
 	//The options panel uses a GridLayout to avoid problems with how non-visible elements interact with the GridBagLayout
 	private void bottomOptionsBar()
 	{
-		GridLayout grid = new GridLayout(2, 0, 8, 4);
+		GridLayout grid = new GridLayout(1, 0, 8, 4);
 		TitledBorder title = new TitledBorder("Options");
 		title.setTitleFont(defaultTextFont);
 		optionsPanel = new JPanel(grid);
@@ -242,18 +244,20 @@ public class ContactGUI extends JFrame
 		optionsPanel.add(editCancel);
 		editCancel.setVisible(false);
 		
-		grid.setColumns(3);
-		JLabel sortLabel = new JLabel("<html><em>Sorting Options:</em></html>", JLabel.CENTER);
-		sortLabel.setBackground(Color.lightGray);
-		optionsPanel.add(sortLabel);
-
+		TitledBorder titleS = new TitledBorder("Sorting Styles");
+		titleS.setTitleFont(defaultTextFont);
+		sortingPanel = new JPanel(new GridLayout(1, 0, 8, 4));
+		sortingPanel.setBorder(new CompoundBorder(titleS, new EmptyBorder(4, 4, 4, 4)));
+		sortingPanel.setBackground(Color.lightGray);
+		
 		sortComboBox = new JComboBox<String>(sortingStyles);
-		optionsPanel.add(sortComboBox);
+		sortingPanel.add(sortComboBox);
 
 		sortConfirm = new JButton("Sort");
 		sortConfirm.addActionListener(new GUIActionListeners.sortContact("Sort Contacts List"));
 		sortConfirm.setBackground(Color.lightGray);
-		optionsPanel.add(sortConfirm);
+		sortingPanel.add(sortConfirm);
+		
 	}
 	
 	
