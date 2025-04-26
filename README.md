@@ -44,3 +44,5 @@ This program is a complete overhaul of one of my old Java projects. The original
 - [x] Write current Contacts into a file
 - [x] Read stored Contacts from a file
 - [x] Set up GUI
+
+_This project is licensed under the Apache 2.0 license. This project relies on the specific library modules jackson-jr-objects and jackson-jr-annotation-support which are also under the Apache 2.0 license. While these libraries are not included in this repository, they are required for the program to work and are included in the uber-jar release. These libraries are used without any modification and are only used to help the program store, save, and load contact information._
